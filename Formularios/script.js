@@ -78,7 +78,7 @@ function validaUF(elemento) {
             this.classList.remove('erro');
             this.parentNode.classList.remove('erro');
         } else {
-            document.querySelector('.mensagem').innerHTML = "UF inválido. Preencha o campo obrigatório em destaque corretamente.";
+            document.querySelector('.mensagem').innerHTML = "Estado inválido. Preencha o campo obrigatório em destaque corretamente.";
             this.classList.add('erro');
             this.parentNode.classList.add('erro');
             return false;
