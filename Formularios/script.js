@@ -1,186 +1,112 @@
-function calcularMedia( notas ) {
 
-    let soma = 0;
-    for( c = 0; c < notas.length; c++) {
-        soma += notas[c];
-    }
+function validaCampo(elemento) {
 
-    media = soma / notas.length;
+    elemento.addEventListener('focusout', function (event) {
 
-    return media;
+        event.preventDefault();
 
-}
-
-let media; // escopo global
-
-function aprovacao( notas ) {
-
-    let media = calcularMedia( notas ); // escopo da função
-
-    let condicao = media >= 8 ? "aprovado" : "reprovado";
-
-    return 'Média: ' + media + ' - Resultado: ' + condicao;
+        if (this.value == "") {
+            document.querySelector('.mensagem').innerHTML = "Preencha o campo obrigatório em destaque."
+            this.classList.add('erro');
+            this.parentNode.classList.add('erro');
+            return false;
+        } else {
+            document.querySelector('.mensagem').innerHTML = "";
+            this.classList.remove('erro');
+            this.parentNode.classList.remove('erro');
+        }
+    });
 
 }
 
 
-// Função Recursivas
+function validaCampoNumerico(elemento) {
 
-function contagemRegressiva(numero){
+    elemento.addEventListener('focusout', function (event) {
 
-    console.log(numero);  
-    
-    let proximoNumero = numero - 1;
+        event.preventDefault();
 
-    if(proximoNumero > 0)
-        contagemRegressiva(proximoNumero);
+        let numero = this.value.match(/^[\d]5-[\d]3/) ? this.value.replace(/-/, "") : this.value;
 
-}
-
-// contagemRegressiva(50);
-
-/* 
- * Formulário envio de dados para cálculo da média 
- */
-const formulario1 = document.getElementById('formulario-01');
-
-if(formulario1)
-    formulario1.addEventListener('submit', function( evento ){
-
-        evento.preventDefault();
-        evento.stopPropagation();
-
-        if( this.getAttribute('class').match(/erro/) ) {
+        if (numero != "" && numero.match(/[0-9]*/) && numero >= 0 && numero <= 9) {
+            document.querySelector('.mensagem').innerHTML = "";
+            this.classList.remove('erro');
+            this.parentNode.classList.remove('erro');
+        } else {
+            document.querySelector('.mensagem').innerHTML = "Preencha o campo obrigatório em destaque."
+            this.classList.add('erro');
+            this.parentNode.classList.add('erro');
             return false;
         }
+    });
+
+}
+
+
+function validaEmail(elemento) {
+    elemento.addEventListener('focusout', function (event) {
+
+        event.preventDefault();
+
+        const emailValido = /^[a-z0-9]+[a-z0-9]+@[a-z0-9]+\.[a-z]+\.([a-z]+)?$/i;
+        if (this.value.match(emailValido)) {
+            document.querySelector('.mensagem').innerHTML = "";
+            this.classList.remove('erro');
+            this.parentNode.classList.remove('erro');
+        } else {
+            document.querySelector('.mensagem').innerHTML = "E-mail inválido. Preencha o campo obrigatório em destaque corretamente.";
+            this.classList.add('erro');
+            this.parentNode.classList.add('erro');
+            return false;
+        }
+    });
+
+}
+
+
+function validaUF(elemento) {
+    elemento.addEventListener('focusout', function (event) {
+
+        event.preventDefault();
         
-        let dados = new FormData(this);
+       const uf = this.value.trim();
 
-        let notas = [];
-
-        for(let key of dados.keys()) {
-
-            let numero = dados.get(key).match(/\d*/) ? Number(dados.get(key)) : 0; // é um número
-
-            if(!isNaN(numero)) {
-                notas.push(numero);
-            }
-
-        }
-
-        console.log(notas);
-
-        texto = aprovacao(notas)
-
-        document.getElementById('resultado').innerHTML = texto;
-
-    });
-
-const formulario2 = document.getElementById('formulario-02');
-
-function validaCampo(elemento){
-
-    elemento.addEventListener('focusout', function(event) {
-
-        event.preventDefault();
-
-        if(this.value == ""){
-            document.querySelector('.mensagem').innerHTML = "verifique o preenchimento dos campos em vermelho";
-            this.classList.add('erro');
-            this.parentNode.classList.add('erro');
-            return false;
-        } else {
-            document.querySelector('.mensagem').innerHTML = "";
-            this.classList.remove('erro');
-            this.parentNode.classList.remove('erro');
-        }
-
-    });
-
-}
-
-function validaCampoNumerico(elemento){
-
-    elemento.addEventListener('focusout', function(event) {
-
-        event.preventDefault();
-
-        let numero = this.value.match(/^[\d]5-[\d]3/) ? this.value.replace(/-/, "") : this.value; 
-
-        if(numero != "" && numero.match(/[0-9]*/) && numero >= 0 && numero <= 10){
-            document.querySelector('.mensagem').innerHTML = "";
+       const UFValido = /^[A-Za-z]{2}$/;
+       if (uf.length === 2 && UFValido.test(uf)) {
+      
+                 document.querySelector('.mensagem').innerHTML = "";
             this.classList.remove('erro');
             this.parentNode.classList.remove('erro');
         } else {
-            document.querySelector('.mensagem').innerHTML = "verifique o preenchimento dos campos em destaque";
+            document.querySelector('.mensagem').innerHTML = "UF inválido. Preencha o campo obrigatório em destaque corretamente.";
             this.classList.add('erro');
             this.parentNode.classList.add('erro');
             return false;
         }
-
     });
 
 }
 
 
-function validaEmail(elemento){
-
-    elemento.addEventListener('focusout', function(event) {
-
-        event.preventDefault();
-
-        const emailValido = /^[a-z0-9.]+@[a-z0-9]+\.[a-z]+(\.[a-z]+)?/i;
-        if(this.value.match(emailValido)) {
-            document.querySelector('.mensagem').innerHTML = "";
-            this.classList.remove('erro');
-            this.parentNode.classList.remove('erro');
-        } else {
-            document.querySelector('.mensagem').innerHTML = "verifique o preenchimento dos campos em destaque";
-            this.classList.add('erro');
-            this.parentNode.classList.add('erro');
-            return false;
-        }
-
-    });
-
-}
-
-function validaCampoUF(elemento) {
-    elemento.addEventListener('focusout', function(event) {
-    event.preventDefault();
-    
-    let uf = this.value.trim(); // Remove espaços em branco do início e do fim
-
-    if (uf.length === 2 && /^[A-Za-z]{2}$/.test(uf)) {
-        document.querySelector('.mensagem').innerHTML = "";
-        this.classList.remove('erro');
-        this.parentNode.classList.remove('erro');
-    } else {
-        document.querySelector('.mensagem').innerHTML = "Verifique o preenchimento dos campos em destaque";
-        this.classList.add('erro');
-        this.parentNode.classList.add('erro');
-        return false;
-        }
-    });
-}
 
 let camposObrigatorios = document.querySelectorAll('input.obrigatorio');
 let camposNumericos = document.querySelectorAll('input.numero');
 let camposEmail = document.querySelectorAll('input.email');
-let camposuf = document.querySelectorAll('input.uf');
+let camposUF = document.querySelectorAll('input.uf');
 
-for( let emFoco of camposObrigatorios) {
+for (let emFoco of camposObrigatorios) {
     validaCampo(emFoco);
 }
 
-for( let emFoco of camposNumericos) {
+for (let emFoco of camposNumericos) {
     validaCampoNumerico(emFoco);
 }
 
-for( let emFoco of camposEmail) {
+for (let emFoco of camposEmail) {
     validaEmail(emFoco);
 }
 
-for (let emFoco of camposuf) {
-    validaCampoUF(emFoco);
+for (let emFoco of camposUF) {
+    validaUF(emFoco);
 }
+
